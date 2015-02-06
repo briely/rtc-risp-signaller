@@ -18,7 +18,7 @@ var RS_CONNECTED = 2;
 // initialise signaller metadata so we don't have to include the package.json
 // TODO: make this checkable with some kind of prepublish script
 var metadata = {
-  version: '5.2.2'
+  version: '1.0.0'
 };
 
 /**
@@ -67,6 +67,8 @@ module.exports = function(messenger, opts) {
   var autoreply = (opts || {}).autoreply;
   var autoconnect = (opts || {}).autoconnect;
   var reconnect = (opts || {}).reconnect;
+  var authTokenProvider = (opts || {}).authTokenProvider;
+  var room = (opts || {}).room;
 
   // initialise the metadata
   var localMeta = {};
@@ -82,7 +84,7 @@ module.exports = function(messenger, opts) {
     browser: detect.browser,
     browserVersion: detect.browserVersion,
     id: id,
-    agent: 'signaller@' + metadata.version
+    agent: 'risp-signaller@' + metadata.version
   };
 
   // create the peers map
@@ -416,6 +418,23 @@ module.exports = function(messenger, opts) {
       send: sender,
     };
   };
+
+  signaller.join = function(){
+    var messageId = uuid();
+    var args = ['1/JN', messageId, id, room]
+    if (typeof authTokenProvider == 'function') {
+      authTokenProvider(function(token){
+        bufferedMessage(args.concat([token]));
+      });
+    } else {
+      bufferMessage(args);
+    }
+  };
+
+  signaller.on("risp", function(data){
+    // Do some stuff with data;
+    signaller.join();
+  });
 
   // initialise opts defaults
   opts = defaults({}, opts, require('./defaults'));

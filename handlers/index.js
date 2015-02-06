@@ -8,6 +8,6 @@
 
 module.exports = function(signaller, opts) {
   return {
-    announce: require('./announce')(signaller, opts)
+    '1': require('./v1')(signaller, opts)
   };
 };

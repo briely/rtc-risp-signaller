@@ -13,8 +13,8 @@ env:
     - BROWSER=firefox BVER=nightly
 
   global:
-  - secure: JhS7qlPficasGRDHP8Cw2BFJMgjCfTl1WIO35wvnvNgDQ2KdaImYBSzFGtNYURY6fiRstxTAcbnYV9vif2k2LMZua1mN1jQ2NiUiBApAxmFUo9xev76Cil0c/ztVgr+kfWfIx5CDo2vUTP7Ynf6iy6Nbvr7bCkCB0QHEpKPnLyc=
-  - secure: ZgprPQLTN78NQA/AJkKpYQaWNZZm1J/tpjwivwunsd9g0Z63WRlvo/qp6IZZ9JB6VKuGUvX8U8Ygmmw5ogJ0bEsRhVsXGsVQ6andsqv8L0lr6RRMjKtxo/Tve5CnloJkCOgJGH80YGaOczBTKaJKs3PTCsC6tuRpYBT2BIOAihc=
+  - secure: #JhS7qlPficasGRDHP8Cw2BFJMgjCfTl1WIO35wvnvNgDQ2KdaImYBSzFGtNYURY6fiRstxTAcbnYV9vif2k2LMZua1mN1jQ2NiUiBApAxmFUo9xev76Cil0c/ztVgr+kfWfIx5CDo2vUTP7Ynf6iy6Nbvr7bCkCB0QHEpKPnLyc=
+  - secure: #ZgprPQLTN78NQA/AJkKpYQaWNZZm1J/tpjwivwunsd9g0Z63WRlvo/qp6IZZ9JB6VKuGUvX8U8Ygmmw5ogJ0bEsRhVsXGsVQ6andsqv8L0lr6RRMjKtxo/Tve5CnloJkCOgJGH80YGaOczBTKaJKs3PTCsC6tuRpYBT2BIOAihc=
 
 before_install:
   - mkdir -p .travis
@@ -31,7 +31,7 @@ after_failure:
 
 notifications:
   email:
-  - damon.oehlman@nicta.com.au
+  - briely.marum@nicta.com.au
 
   irc: irc.freenode.org#rtc.io
 

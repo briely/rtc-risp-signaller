@@ -1,7 +1,7 @@
 {
-  "name": "rtc-signaller",
-  "version": "5.2.2",
-  "description": "rtc.io transportless signalling for WebRTC",
+  "name": "rtc-risp-signaller",
+  "version": "1.0.0",
+  "description": "rtc.io transportless signalling for WebRTC using RISP1",
   "directories": {
     "test": "test"
   },
@@ -31,17 +31,17 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/rtc-io/rtc-signaller.git"
+    "url": "https://github.com/briely/rtc-risp-signaller.git"
   },
   "keywords": [
     "rtc.io",
     "webrtc",
     "signalling"
   ],
-  "author": "Damon Oehlman <damon.oehlman@nicta.com.au>",
+  "author": "Briely Marum <briely.marum@nicta.com.au>",
   "license": "Apache 2.0",
   "bugs": {
-    "url": "https://github.com/rtc-io/rtc-signaller/issues"
+    "url": "https://github.com/briely/rtc-risp-signaller/issues"
   },
   "testling": {
     "files": "test/all.js",
