@@ -2,8 +2,8 @@
 'use strict';
 
 var messenger = require('rtc-switchboard-messenger')("ws://localhost:9000");
-var signaller1 = require("./")(messenger, {room: "testRoom"});
-var signaller2 = require("./")(messenger, {room: "testRoom"});
+var signaller1 = require("./")(messenger, {room: "testRoom", autoReply: false});
+var signaller2 = require("./")(messenger, {room: "testRoom", autoReply: false});
 
 signaller1.on("rawdata", function(d){
   console.log('1 <-- ' + d);

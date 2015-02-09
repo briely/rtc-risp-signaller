@@ -407,8 +407,6 @@ module.exports = function(messenger, opts) {
         return;
       }
 
-      console.log(arguments);
-
       args = [
         '1/TO',
         messageId,
@@ -416,8 +414,6 @@ module.exports = function(messenger, opts) {
         targetId + '.' + createDataLine([].slice.call(arguments))
       ];
 
-      // inject metadata
-      //args.splice(3, 0, createMetadata());
       bufferMessage(args);
     };
 
