@@ -84,7 +84,8 @@ module.exports = function(messenger, opts) {
     browser: detect.browser,
     browserVersion: detect.browserVersion,
     id: id,
-    agent: 'risp-signaller@' + metadata.version
+    agent: 'risp-signaller@' + metadata.version,
+    room: room
   };
 
   // create the peers map
@@ -102,6 +103,7 @@ module.exports = function(messenger, opts) {
   }
 
   function bufferMessage(args) {
+    signaller("send", createDataLine(args));
     queue.push(createDataLine(args));
 
     // if we are not connected (and should autoconnect), then attempt connection
@@ -198,7 +200,6 @@ module.exports = function(messenger, opts) {
     var args = [].slice.call(arguments);
 
     // inject the metadata
-    args.splice(1, 0, createMetadata());
     bufferMessage(args);
   };
 
@@ -261,9 +262,10 @@ module.exports = function(messenger, opts) {
 
   **/
   signaller.announce = function(data, sender) {
-
+    var messageId = uuid();
+    var header = '1/AN|'+messageId+'|'+id +'.'
     function sendAnnounce() {
-      (sender || send)('/announce', attributes);
+      (sender || send)(header + JSON.stringify(attributes));
       signaller('local:announce', attributes);
     }
 
@@ -281,6 +283,10 @@ module.exports = function(messenger, opts) {
 
     // send the attributes over the network
     return announceTimer = setTimeout(sendAnnounce, (opts || {}).announceDelay || 10);
+  };
+
+  signaller.ackPeer = function(messageId) {
+      bufferMessage(["1/AP", messageId, id]);
   };
 
   /**
@@ -387,6 +393,7 @@ module.exports = function(messenger, opts) {
   signaller.to = function(targetId) {
     // create a sender that will prepend messages with /to|targetId|
     var sender = function() {
+      var messageId = uuid();
       // get the peer (yes when send is called to make sure it hasn't left)
       var peer = signaller.peers.get(targetId);
       var args;
@@ -400,13 +407,17 @@ module.exports = function(messenger, opts) {
         return;
       }
 
+      console.log(arguments);
+
       args = [
-        '/to',
-        targetId
-      ].concat([].slice.call(arguments));
+        '1/TO',
+        messageId,
+        id,
+        targetId + '.' + createDataLine([].slice.call(arguments))
+      ];
 
       // inject metadata
-      args.splice(3, 0, createMetadata());
+      //args.splice(3, 0, createMetadata());
       bufferMessage(args);
     };
 
@@ -429,6 +440,10 @@ module.exports = function(messenger, opts) {
     } else {
       bufferMessage(args);
     }
+
+    signaller.once("as:"+messageId, function(){
+      signaller("joined")
+    });
   };
 
   signaller.on("risp", function(data){
