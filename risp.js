@@ -41,5 +41,10 @@ signaller2.on("peer:announce", function(d, from){
   console.log("Response announce received");
 });
 
+signaller1.on("error", function(e){
+  console.log("Error");
+  console.log(e);
+});
+
 setInterval(function(){
 }, 5000);

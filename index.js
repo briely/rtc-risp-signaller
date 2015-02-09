@@ -121,6 +121,9 @@ module.exports = function(messenger, opts) {
   }
 
   function handleDisconnect() {
+    queue.end();
+    queue = pushable();
+
     if (reconnect === undefined || reconnect) {
       setTimeout(connect, 50);
     }
@@ -272,8 +275,6 @@ module.exports = function(messenger, opts) {
     // if we are already connected, then ensure we announce on reconnect
     if (readyState === RS_CONNECTED) {
       // always announce on reconnect
-      signaller.removeListener('connected', announceOnReconnect);
-      signaller.on('connected', announceOnReconnect);
     }
 
     clearTimeout(announceTimer);
@@ -438,7 +439,7 @@ module.exports = function(messenger, opts) {
     }
 
     signaller.once("as:"+messageId, function(){
-      signaller("joined")
+      signaller("joined");
     });
   };
 
@@ -446,6 +447,8 @@ module.exports = function(messenger, opts) {
     // Do some stuff with data;
     signaller.join();
   });
+
+  signaller.on("joined", announceOnReconnect);
 
   // initialise opts defaults
   opts = defaults({}, opts, require('./defaults'));
