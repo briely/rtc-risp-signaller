@@ -15,6 +15,14 @@ var RS_DISCONNECTED = 0;
 var RS_CONNECTING = 1;
 var RS_CONNECTED = 2;
 
+// If no AS is received for a 30 seconds, we must reset the connection and rejoin
+// See: https://github.inside.nicta.com.au/BMarum/risp#acknowledged-by-server
+var AS_FAIL_TIMOUT = 30000;
+
+// Retransmit announce message every 20 seconds
+// See: https://github.inside.nicta.com.au/BMarum/risp#announce
+var ANNOUNCE_TRANSMIT_PERIOD = 10000;
+
 // initialise signaller metadata so we don't have to include the package.json
 // TODO: make this checkable with some kind of prepublish script
 var metadata = {
@@ -79,6 +87,8 @@ module.exports = function(messenger, opts) {
   // initialise the id
   var id = signaller.id = (opts || {}).id || uuid();
 
+  signaller.pendingAcks = {};
+
   // initialise the attributes
   var attributes = signaller.attributes = {
     browser: detect.browser,
@@ -97,6 +107,32 @@ module.exports = function(messenger, opts) {
   var processor;
   var announceTimer = 0;
   var readyState = RS_DISCONNECTED;
+
+  function expectAS(messageId) {
+    signaller.pendingAcks[messageId] = setTimeout(function(){
+      // Cancel our other pending ASs so we don't kill our future
+      // connection
+      for(var a in signaller.pendingAcks) {
+        if (signaller.pendingAcks.hasOwnProperty(a)) {
+          clearTimeout(signaller.pendingAcks[a]);
+        }
+      }
+      signaller.close();
+    }, AS_FAIL_TIMOUT);
+    signaller.once("as:" + messageId, function(){
+      clearTimeout(signaller.pendingAcks[messageId])
+    });
+  }
+
+  // IDK, seems clarner.
+  signaller.periodicAnnounce = setTimeout(function(){}, 10);
+
+  function periodicAnnounce() {
+    clearTimeout(signaller.periodicAnnounce);
+    signaller.periodicAnnounce = setTimeout(function(){
+      signaller.announce();
+    }, ANNOUNCE_TRANSMIT_PERIOD);
+  }
 
   function announceOnReconnect() {
     signaller.announce();
@@ -264,12 +300,18 @@ module.exports = function(messenger, opts) {
     ```
 
   **/
-  signaller.announce = function(data, sender) {
+  signaller.announce = function(data, sender, skipAck) {
     var messageId = uuid();
     var header = '1/AN|'+messageId+'|'+id +'.'
     function sendAnnounce() {
       (sender || send)(header + JSON.stringify(attributes));
       signaller('local:announce', attributes);
+
+      if(!skipAck) {
+        expectAS(messageId);
+      }
+
+      periodicAnnounce();
     }
 
     // if we are already connected, then ensure we announce on reconnect
@@ -416,11 +458,12 @@ module.exports = function(messenger, opts) {
       ];
 
       bufferMessage(args);
+      expectAS(messageId);
     };
 
     return {
       announce: function(data) {
-        return signaller.announce(data, sender);
+        return signaller.announce(data, sender, true);
       },
 
       send: sender,
@@ -433,9 +476,11 @@ module.exports = function(messenger, opts) {
     if (typeof authTokenProvider == 'function') {
       authTokenProvider(function(token){
         bufferedMessage(args.concat([token]));
+        expectAS(messageId);
       });
     } else {
       bufferMessage(args);
+      expectAS(messageId);
     }
 
     signaller.once("as:"+messageId, function(){

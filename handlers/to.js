@@ -31,7 +31,9 @@ module.exports = function(signaller, opts, v1) {
     }
 
     var peer = signaller.peers.get(from);
-    sendEvent(content.split('|'), peer, content);
+    if (peer){
+      sendEvent(content.split('|'), peer, content);
+    }
   };
 
 };
