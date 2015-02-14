@@ -24,7 +24,7 @@ module.exports = function(signaller, opts, v1) {
     // We need to ack the TO. If the announce handler is invoked
     // it will attempt to ack the an, which will the server
     // will ignore.
-    signaller.ackPeer(messageId);
+    // signaller.ackPeer(messageId);
 
     if (v1(content, true)) {
       return true;

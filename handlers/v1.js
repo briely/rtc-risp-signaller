@@ -14,7 +14,6 @@ module.exports = function(signaller, opts) {
       handler(header, content, isDM);
       return true;
     } else {
-      console.warn("No handler for RISP1 message " + data);
       return false;
     }
   }

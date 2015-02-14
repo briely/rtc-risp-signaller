@@ -17,7 +17,10 @@ module.exports = function(signaller, opts) {
     var fromId = header[2];
     var data = jsonparse(content);
     var srcData = {id: fromId};
-    signaller.ackPeer(messageId);
+
+    if (!isDM){
+      signaller.ackPeer(messageId);
+    }
 
     if (! dataAllowed(data) || fromId === signaller.id) {
       return;
@@ -44,14 +47,14 @@ module.exports = function(signaller, opts) {
     peer = {
       id: fromId,
 
-      // initialise the local role index
+      // initialize the local role index
       roleIdx: [data.id, signaller.id].sort().indexOf(data.id),
 
-      // initialise the peer data
+      // initialize the peer data
       data: {}
     };
 
-    // initialise the peer data
+    // initialize the peer data
     extend(peer.data, data);
 
     // reset inactivity state

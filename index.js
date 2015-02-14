@@ -109,19 +109,19 @@ module.exports = function(messenger, opts) {
   var readyState = RS_DISCONNECTED;
 
   function expectAS(messageId) {
-    signaller.pendingAcks[messageId] = setTimeout(function(){
-      // Cancel our other pending ASs so we don't kill our future
-      // connection
-      for(var a in signaller.pendingAcks) {
-        if (signaller.pendingAcks.hasOwnProperty(a)) {
-          clearTimeout(signaller.pendingAcks[a]);
-        }
-      }
-      signaller.close();
-    }, AS_FAIL_TIMOUT);
-    signaller.once("as:" + messageId, function(){
-      clearTimeout(signaller.pendingAcks[messageId])
-    });
+    // signaller.pendingAcks[messageId] = setTimeout(function(){
+    //   // Cancel our other pending ASs so we don't kill our future
+    //   // connection
+    //   for(var a in signaller.pendingAcks) {
+    //     if (signaller.pendingAcks.hasOwnProperty(a)) {
+    //       clearTimeout(signaller.pendingAcks[a]);
+    //     }
+    //   }
+    //   signaller.close();
+    // }, AS_FAIL_TIMOUT);
+    // signaller.once("as:" + messageId, function(){
+    //   clearTimeout(signaller.pendingAcks[messageId])
+    // });
   }
 
   // IDK, seems clarner.
