@@ -17,9 +17,9 @@ module.exports = function(signaller, opts) {
     var fromId = header[2];
     var data = jsonparse(content);
     var srcData = {id: fromId};
-
+    data.id = fromId;
     if (!isDM){
-      signaller.ackPeer(messageId);
+      //signaller.ackPeer(messageId);
     }
 
     if (! dataAllowed(data) || fromId === signaller.id) {

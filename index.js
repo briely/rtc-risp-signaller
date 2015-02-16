@@ -128,10 +128,10 @@ module.exports = function(messenger, opts) {
   signaller.periodicAnnounce = setTimeout(function(){}, 10);
 
   function periodicAnnounce() {
-    clearTimeout(signaller.periodicAnnounce);
-    signaller.periodicAnnounce = setTimeout(function(){
-      signaller.announce();
-    }, ANNOUNCE_TRANSMIT_PERIOD);
+    // clearTimeout(signaller.periodicAnnounce);
+    // signaller.periodicAnnounce = setTimeout(function(){
+    //   signaller.announce();
+    // }, ANNOUNCE_TRANSMIT_PERIOD);
   }
 
   function announceOnReconnect() {
@@ -487,6 +487,10 @@ module.exports = function(messenger, opts) {
       signaller("joined");
     });
   };
+
+  signaller.on("room:update", function(ids){
+    signaller.announce();
+  });
 
   signaller.on("risp", function(data){
     // Do some stuff with data;

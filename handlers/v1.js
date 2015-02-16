@@ -24,7 +24,8 @@ module.exports = function(signaller, opts) {
     AS: require('./ackserver')(signaller, opts),
     AA: require('./ackannounce')(signaller, opts),
     TO: require('./to')(signaller, opts, handler),
-    AP: require('./ackpeer')(signaller, opts)
+    AP: require('./ackpeer')(signaller, opts),
+    RU: require('./roomupdate')(signaller, opts)
   };
 
   return handler;
