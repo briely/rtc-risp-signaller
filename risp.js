@@ -85,7 +85,7 @@ setInterval(function(){
   console.log((count / ((end - start)/1000)) + " message per second by " + pairs + " pairs");
   start = end;
   count = 0;
-  if (pairs < 5) {
+  if (pairs < 20) {
     startPair();
   }
 }, 5000)
