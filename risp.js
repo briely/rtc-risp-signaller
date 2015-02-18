@@ -8,7 +8,7 @@ var start = new Date().getTime();
 var pairs = 0;
 
 function startPair(){
-  var messenger1 = require('rtc-switchboard-messenger')("ws://crisp-staging-lb-1095139719.ap-southeast-2.elb.amazonaws.com");
+  var messenger1 = require('rtc-switchboard-messenger')("ws://crisp-staging-lb-1724386141.ap-southeast-2.elb.amazonaws.com");
   var room = uuid();
   var signaller1 = require("./")(messenger1, {room: room, autoReply: true});
 
@@ -48,7 +48,7 @@ function startPair(){
   });
 
   setTimeout(function(){
-    var messenger2 = require('rtc-switchboard-messenger')("ws://crisp-staging-lb-1095139719.ap-southeast-2.elb.amazonaws.com");
+    var messenger2 = require('rtc-switchboard-messenger')("ws://crisp-staging-lb-1724386141.ap-southeast-2.elb.amazonaws.com");
 
     var signaller2 = require("./")(messenger2, {room: room, autoReply: true});
 
@@ -85,7 +85,7 @@ setInterval(function(){
   console.log((count / ((end - start)/1000)) + " message per second by " + pairs + " pairs");
   start = end;
   count = 0;
-  if (pairs < 20) {
+  if (pairs < 1) {
     startPair();
   }
 }, 5000)
